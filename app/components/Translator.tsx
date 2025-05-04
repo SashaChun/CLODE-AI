@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import TextBlock from "@/app/components/TextBlock";
 import LangugeSwitcher from "@/app/components/LangugeSwitcher";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import { useSpeechSynthesis } from 'react-speech-kit';
 
 interface TranslationResult {
     translatedText: string;
@@ -12,15 +13,30 @@ interface TranslationResult {
 const Translator = () => {
     const [inputText, setInputText] = useState('');
     const [targetLanguage, setTargetLanguage] = useState('en');
+    const [sourceLanguage, setSourceLanguage] = useState('uk');
     const [translatedText, setTranslatedText] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null);
+    const [isSpeaking, setIsSpeaking] = useState(false);
 
-    // Використовуємо SpeechRecognition
+    // Speech Recognition
     const { transcript, resetTranscript, listening } = useSpeechRecognition();
+    const { speak, cancel, speaking } = useSpeechSynthesis();
 
-    // Оновлюємо inputText в реальному часі
+    const handleSpeak = () => {
+        if (translatedText) {
+            speak({ text: translatedText });
+            setIsSpeaking(true);
+        }
+    };
+
+    const handleStop = () => {
+        cancel();
+        setIsSpeaking(false);
+    };
+
+    // Update inputText in real-time
     useEffect(() => {
         if (transcript) {
             setInputText(transcript);
@@ -33,6 +49,10 @@ const Translator = () => {
 
     const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setTargetLanguage(event.target.value);
+    };
+
+    const handleSourceLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setSourceLanguage(event.target.value);
     };
 
     const handleTranslate = async () => {
@@ -48,12 +68,12 @@ const Translator = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ text: inputText, targetLanguage }),
+                body: JSON.stringify({ text: inputText, sourceLanguage, targetLanguage }),
             });
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData?.error || 'Помилка під час перекладу.');
+                throw new Error(errorData?.error || 'Translation error.');
             }
 
             const data: TranslationResult = await response.json();
@@ -65,7 +85,7 @@ const Translator = () => {
         }
     };
 
-    // 🔁 Debounce: автоматичний переклад після паузи
+    // Debounce for automatic translation after a pause
     useEffect(() => {
         if (!inputText.trim()) return;
 
@@ -90,12 +110,12 @@ const Translator = () => {
 
     return (
         <div className="p-10">
-            <h1 className="text-yellow-400 text-5xl font-extrabold tracking-widest drop-shadow-lg">
-                CLODE
-            </h1>
-
+            <h1 className="text-yellow-400 text-5xl font-extrabold tracking-widest drop-shadow-lg">CLODE</h1>
 
             <TextBlock
+                onStartList={handleSpeak}
+                onStopList={handleStop}
+                list={speaking}
                 output={translatedText}
                 value={inputText}
                 onChange={handleInputChange}
@@ -106,13 +126,15 @@ const Translator = () => {
 
             <div className="flex justify-center mt-10">
                 <LangugeSwitcher
+                    handleSourceLanguageChange={handleSourceLanguageChange}
+                    sourceLanguage={sourceLanguage}
                     targetLanguage={targetLanguage}
                     handleLanguageChange={handleLanguageChange}
                     isLoading={loading}
                 />
             </div>
 
-            {error && <p className="text-red-500 mt-4">Помилка: {error}</p>}
+            {error && <p className="text-red-500 mt-4">Error: {error}</p>}
         </div>
     );
 };

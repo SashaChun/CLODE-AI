@@ -1,12 +1,12 @@
 'use server';
 
-import {ai} from "@/app/ai/ai-instance";
+import { ai } from "@/app/ai/ai-instance";
 import { z } from 'genkit';
 
-// Input schema expects the full name of the target language for clarity in the prompt
 const TranslateTextInputSchema = z.object({
     text: z.string().describe('The text to translate.'),
-    targetLanguage: z.string().describe('The target language name for the translation (e.g., "Spanish", "French").'),
+    sourceLanguage: z.string().describe('The source language name (e.g., "Ukrainian", "French").'),
+    targetLanguage: z.string().describe('The target language name for the translation (e.g., "English", "Spanish").'),
 });
 export type TranslateTextInput = z.infer<typeof TranslateTextInputSchema>;
 
@@ -15,28 +15,26 @@ const TranslateTextOutputSchema = z.object({
 });
 export type TranslateTextOutput = z.infer<typeof TranslateTextOutputSchema>;
 
-// The main function exported for use in the application
 export async function translateText(input: TranslateTextInput): Promise<TranslateTextOutput> {
-    console.log(`Translating "${input.text}" to ${input.targetLanguage}`);
-    // Directly call the Genkit LLM to translate text
+    console.log(`Translating from ${input.sourceLanguage} to ${input.targetLanguage}: "${input.text}"`);
     try {
+        let text = input.text;
+
+        // Заміна "Oksana" або "Оксана" на "Оксана з Варашу"
+        text = text.replace(/\b(Oksana|Оксана)\b/gi, 'Оксана з Варашу');
+
         const response = await ai.generate({
-            prompt: `Translate the following text to ${input.targetLanguage}. Output only the translated text, without any introductory phrases like "Here is the translation:" or explanations.\n\nText: "${input.text}"`,
-            // Optional: Configure model parameters if needed
-            // config: { temperature: 0.7 }
+            prompt: `Translate the following text from ${input.sourceLanguage} to ${input.targetLanguage}. 
+Only return the translated text. No explanations or additional phrases.
+
+Text: "${text}"`
         });
+
         const translatedText = response.text.trim();
         console.log(`Translation result: "${translatedText}"`);
         return { translatedText };
     } catch (error) {
         console.error("Error during translation AI call:", error);
-        // Re-throw or handle error appropriately
         throw new Error("AI translation failed.");
     }
 }
-
-// Note: The tool-based approach and separate flow definition (translateTool, translateTextPrompt, translateTextFlow)
-// from the original file are removed for simplification, as the direct ai.generate call is sufficient
-// for this straightforward translation task. If more complex logic or multi-step processing were needed,
-// reintroducing flows and tools would be appropriate.
-
