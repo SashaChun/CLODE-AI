@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import TextBlock from "@/app/components/TextBlock";
 import LangugeSwitcher from "@/app/components/LangugeSwitcher";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import { useSpeechSynthesis } from 'react-speech-kit';
 
 interface TranslationResult {
     translatedText: string;
@@ -22,17 +21,21 @@ const Translator = () => {
 
     // Speech Recognition
     const { transcript, resetTranscript, listening } = useSpeechRecognition();
-    const { speak, cancel, speaking } = useSpeechSynthesis();
 
     const handleSpeak = () => {
         if (translatedText) {
-            speak({ text: translatedText });
+            const utterance = new SpeechSynthesisUtterance(translatedText);
+            speechSynthesis.speak(utterance);
             setIsSpeaking(true);
+
+            utterance.onend = () => {
+                setIsSpeaking(false);
+            };
         }
     };
 
     const handleStop = () => {
-        cancel();
+        speechSynthesis.cancel();
         setIsSpeaking(false);
     };
 
@@ -115,7 +118,7 @@ const Translator = () => {
             <TextBlock
                 onStartList={handleSpeak}
                 onStopList={handleStop}
-                list={speaking}
+                list={isSpeaking}
                 output={translatedText}
                 value={inputText}
                 onChange={handleInputChange}
