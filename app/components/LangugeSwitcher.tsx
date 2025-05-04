@@ -13,7 +13,7 @@ const LangugeSwitcher: React.FC<LangugeSwitcherProps> = ({
                                                              isLoading
                                                          }) => {
     return (
-        <div className="w-[40%] h-[50px] flex justify-between items-center bg-[#1A254F] rounded-[30px] font-sans text-white text-sm tracking-wide shadow-md px-4 relative">
+        <div className="w-[80%] sm:w-[40%] h-[50px] flex justify-between items-center bg-[#1A254F] rounded-[30px] font-sans text-white text-sm tracking-wide shadow-md px-4 relative">
             <h1 className="w-[30%] text-center font-semibold">UKRAINE</h1>
 
             <div className="w-[60px] h-[60px] bg-[#152F8D] rounded-full border-2 border-yellow-400 shadow-inner flex items-center justify-center">

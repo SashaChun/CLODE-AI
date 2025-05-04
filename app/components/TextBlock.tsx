@@ -25,15 +25,15 @@ const TextBlock: React.FC<TextBlockProps> = ({
 
     return (
         <div>
-            <div className="flex justify-between mt-10 gap-10">
+            <div className="flex sm:flex-row  flex-col  justify-between mt-10 gap-10">
                 <textarea
                     onChange={onChange}
                     value={value || ''}
-                    className="bg-gradient-to-tr p-3 font-semibold w-[50%] h-[40vh] from-[#556BBE] rounded-[10px] via-[#556BBEcc] to-[#556BBE]"
+                    className="bg-gradient-to-tr p-3 font-semibold sm:w-[50%] w-[100%]   h-[40vh] from-[#556BBE] rounded-[10px] via-[#556BBEcc] to-[#556BBE]"
                 />
 
                 <textarea
-                    className="bg-gradient-to-tr p-3 font-semibold w-[50%] h-[40vh] rounded-[10px] from-[#1C2D6B] via-[#1C2D6Bcc] to-[#1C2D6B]"
+                    className="bg-gradient-to-tr p-3 font-semibold sm:w-[50%] w-[100%] h-[40vh] rounded-[10px] from-[#1C2D6B] via-[#1C2D6Bcc] to-[#1C2D6B]"
                     value={output}
                     readOnly
                 />
