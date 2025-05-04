@@ -1,74 +1,73 @@
-'use client'
+import React from 'react';
 
-import { useState } from "react";
-import { HiOutlineSpeakerWave, HiOutlineSpeakerXMark } from "react-icons/hi2";
-import { FaStopCircle } from "react-icons/fa";
-import { CiMicrophoneOn ,  CiMicrophoneOff } from "react-icons/ci";
-
-interface TextBlockProps {
-    output: string;
+interface Props {
     value: string;
-    onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
-    onStart: () => void;
-    handleStopListening: () => void;
-    listening: boolean;
-    list : boolean,
+    onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+    output: string;
     onStartList: () => void;
     onStopList: () => void;
+    onStart: () => void;
+    listening: boolean;
+    handleStopListening: () => void;
 }
 
-const TextBlock: React.FC<TextBlockProps> = ({
-                                                 output,
-                                                 value,
-                                                 onChange,
-                                                 onStart,
-                                                 handleStopListening,
-                                                 listening,
-                                                    list,
-                                                 onStartList,
-                                                 onStopList
-                                             }) => {
-    const [fieldType, setFieldType] = useState<string | undefined>();
-
+const TextBlock = ({
+                       value,
+                       onChange,
+                       output,
+                       onStartList,
+                       onStopList,
+                       onStart,
+                       listening,
+                       handleStopListening
+                   }: Props) => {
     return (
-        <div>
-            <div className="flex sm:flex-row flex-col w-full justify-between mt-10 gap-10">
-                {/* Введення тексту */}
-                <div className="flex items-start justify-center flex-col w-full sm:w-[48%]">
-        <textarea
-            onChange={onChange}
-            value={value || ''}
-            className="bg-gradient-to-tr p-3 font-semibold w-full h-[40vh] from-[#556BBE] rounded-[10px] via-[#556BBEcc] to-[#556BBE]"
-        />
-                    <div className="flex space-x-2 items-center gap-2 mt-5">
-                        <div className="text-2xl">
-                            <CiMicrophoneOn onClick={onStart} />
-                        </div>
-                        <div className="text-xl">
-                            {listening && <FaStopCircle onClick={handleStopListening} />}
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex items-start  justify-center flex-col w-full sm:w-[48%]">
-        <textarea
-            className="bg-gradient-to-tr p-3 font-semibold w-full h-[40vh] rounded-[10px] from-[#1C2D6B] via-[#1C2D6Bcc] to-[#1C2D6B]"
-            value={output}
-            readOnly
-        />
-                    <div className="flex space-x-2 items-center gap-2 mt-5">
-                        <div className="text-2xl">
-                            <HiOutlineSpeakerWave onClick={onStartList} />
-                        </div>
-                        <div className="text-xl">
-                            {list && <FaStopCircle onClick={onStopList} />}
-                        </div>
-                    </div>
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-10">
+            <div className="relative">
+                <textarea
+                    value={value}
+                    onChange={onChange}
+                    placeholder="Введіть або скажіть щось..."
+                    className="w-full h-64 p-4 text-lg border-2 border-yellow-400 rounded-xl shadow-md resize-none focus:outline-none focus:border-yellow-500 transition"
+                />
+                <div className="absolute bottom-4 right-4 flex gap-2">
+                    {!listening ? (
+                        <button
+                            onClick={onStart}
+                            className="bg-yellow-400 text-white px-4 py-2 rounded-full shadow hover:bg-yellow-500 transition"
+                        >
+                            🎙 Почати
+                        </button>
+                    ) : (
+                        <button
+                            onClick={handleStopListening}
+                            className="bg-red-400 text-white px-4 py-2 rounded-full shadow hover:bg-red-500 transition"
+                        >
+                            🛑 Стоп
+                        </button>
+                    )}
                 </div>
             </div>
 
-
-
+            <div className="relative bg-[#556BBE] border-2 border-yellow-300 rounded-xl p-4 h-64 shadow-md">
+                <p className="text-lg text-gray-800 overflow-y-auto h-full whitespace-pre-wrap">
+                    {output || 'Тут зʼявиться переклад...'}
+                </p>
+                <div className="absolute bottom-4 right-4 flex gap-2">
+                    <button
+                        onClick={onStartList}
+                        className="bg-green-400 text-white px-4 py-2 rounded-full shadow hover:bg-green-500 transition"
+                    >
+                        🔊
+                    </button>
+                    <button
+                        onClick={onStopList}
+                        className="bg-gray-400 text-white px-4 py-2 rounded-full shadow hover:bg-gray-500 transition"
+                    >
+                        🔇
+                    </button>
+                </div>
+            </div>
         </div>
     );
 };

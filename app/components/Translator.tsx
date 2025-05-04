@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import TextBlock from "@/app/components/TextBlock";
 import LangugeSwitcher from "@/app/components/LangugeSwitcher";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
@@ -18,28 +19,14 @@ const Translator = () => {
     const [error, setError] = useState('');
     const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null);
     const [isSpeaking, setIsSpeaking] = useState(false);
+    const [isClient, setIsClient] = useState(false);
 
-    // Speech Recognition
     const { transcript, resetTranscript, listening } = useSpeechRecognition();
 
-    const handleSpeak = () => {
-        if (translatedText) {
-            const utterance = new SpeechSynthesisUtterance(translatedText);
-            speechSynthesis.speak(utterance);
-            setIsSpeaking(true);
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
-            utterance.onend = () => {
-                setIsSpeaking(false);
-            };
-        }
-    };
-
-    const handleStop = () => {
-        speechSynthesis.cancel();
-        setIsSpeaking(false);
-    };
-
-    // Update inputText in real-time
     useEffect(() => {
         if (transcript) {
             setInputText(transcript);
@@ -76,7 +63,7 @@ const Translator = () => {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData?.error || 'Translation error.');
+                throw new Error(errorData?.error || 'Помилка під час перекладу.');
             }
 
             const data: TranslationResult = await response.json();
@@ -88,7 +75,6 @@ const Translator = () => {
         }
     };
 
-    // Debounce for automatic translation after a pause
     useEffect(() => {
         if (!inputText.trim()) return;
 
@@ -103,6 +89,25 @@ const Translator = () => {
         return () => clearTimeout(timer);
     }, [inputText, targetLanguage]);
 
+    const handleSpeak = () => {
+        if (typeof window === 'undefined' || !translatedText) return;
+
+        const utterance = new SpeechSynthesisUtterance(translatedText);
+        window.speechSynthesis.speak(utterance);
+        setIsSpeaking(true);
+
+        utterance.onend = () => {
+            setIsSpeaking(false);
+        };
+    };
+
+    const handleStop = () => {
+        if (typeof window !== 'undefined') {
+            window.speechSynthesis.cancel();
+            setIsSpeaking(false);
+        }
+    };
+
     const handleStartListening = () => {
         SpeechRecognition.startListening();
     };
@@ -111,14 +116,17 @@ const Translator = () => {
         SpeechRecognition.stopListening();
     };
 
+    if (!isClient) return null;
+
     return (
         <div className="p-10">
-            <h1 className="text-yellow-400 text-5xl font-extrabold tracking-widest drop-shadow-lg">CLODE</h1>
+            <h1 className="text-yellow-400 text-5xl font-extrabold tracking-widest drop-shadow-lg">
+                CLODE
+            </h1>
 
             <TextBlock
                 onStartList={handleSpeak}
                 onStopList={handleStop}
-                list={isSpeaking}
                 output={translatedText}
                 value={inputText}
                 onChange={handleInputChange}
@@ -137,7 +145,7 @@ const Translator = () => {
                 />
             </div>
 
-            {error && <p className="text-red-500 mt-4">Error: {error}</p>}
+            {error && <p className="text-red-500 mt-4">Помилка: {error}</p>}
         </div>
     );
 };
