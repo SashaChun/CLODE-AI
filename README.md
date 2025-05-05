@@ -22,3 +22,16 @@
 1. Clone the repository:
    ```bash
    git clone https://github.com/SashaChun/CLODE-AI.git
+
+   ## Installation
+2. Navigate to the project directory:
+   ```bash
+  cd CLODE-AI
+   
+3. Install the dependencies:
+   ```bash
+  npm install
+   
+4. Install the dependencies:
+   ```bash
+  npm run dev
