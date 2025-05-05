@@ -1,5 +1,5 @@
 <h1 align="center">🌐 CLODE-AI</h1>
-<p align="center">Інтелектуальний перекладач на базі Gemini AI, побудований з використанням Next.js та TypeScript</p>
+<p align="center">An intelligent translator powered by Gemini AI, built with Next.js and TypeScript</p>
 
 <p align="center">
   <img src="https://img.shields.io/github/languages/top/SashaChun/CLODE-AI?color=blue" />
@@ -9,54 +9,53 @@
 
 ---
 
-## 📖 Опис проєкту
+## 📖 Project Description
 
-**CLODE-AI** — це сучасний AI-перекладач, що використовує потужну модель **Gemini AI** для забезпечення швидкого та точного перекладу тексту в реальному часі. Розроблений на основі **Next.js**, **TypeScript** та **Tailwind CSS**, інтерфейс є інтуїтивним, адаптивним і придатним для інтеграції у будь-який веб-застосунок.
-
----
-
-## ⚙️ Функціонал
-
-- 🚀 **Швидкий переклад** — миттєва обробка тексту
-- 🧠 **Сучасна технологія** — модель Gemini AI
-- 🎯 **Простота у використанні** — інтуїтивний інтерфейс
-- 🌍 **Кросплатформеність** — працює в різних браузерах та на пристроях
-- 🗣️ **Багатомовна підтримка** — широкий набір мов для перекладу
+**CLODE-AI** is a modern AI-powered translator that utilizes the robust **Gemini AI** model to deliver fast and accurate real-time text translation. Built with **Next.js**, **TypeScript**, and **Tailwind CSS**, the app features a sleek and responsive interface ideal for integration into any web application.
 
 ---
 
-## 🖼️ Зображення
+## ⚙️ Features
 
-![Демо](https://github.com/user-attachments/assets/1ed2696a-e902-4b65-8b19-8d581d64f1af)
-
----
-
-## 🛠️ Технології
-
-- **Next.js** — SSR та генерація статичних сторінок
-- **Gemini AI** — сучасна AI-модель перекладу
-- **TypeScript** — надійна типізація для JavaScript
-- **Tailwind CSS** — стиль сучасного UI
+- 🚀 **Real-time Translation** — instant processing of input text  
+- 🧠 **AI-Powered** — Gemini AI as the core translation engine  
+- 🎯 **User-Friendly** — intuitive and clean interface  
+- 🌍 **Cross-Platform** — works across different browsers and devices  
+- 🗣️ **Multi-language Support** — supports a wide range of languages
 
 ---
 
-## 📦 Встановлення
+## 🖼️ Screenshot
 
-Щоб розгорнути проєкт локально:
+![Demo](https://github.com/user-attachments/assets/1ed2696a-e902-4b65-8b19-8d581d64f1af)
+
+---
+
+## 🛠️ Tech Stack
+
+- **Next.js** — for server-side rendering and static generation  
+- **Gemini AI** — large language model for translation  
+- **TypeScript** — adds static typing to JavaScript  
+- **Tailwind CSS** — utility-first framework for modern UI styling
+
+---
+
+## 📦 Installation
+
+To run the project locally:
 
 ```bash
-# 1. Клонуй репозиторій
+# 1. Clone the repository
 git clone https://github.com/SashaChun/CLODE-AI.git
 
-# 2. Перейди в директорію проєкту
+# 2. Navigate to the project directory
 cd CLODE-AI
 
-# 3. Встанови залежності
+# 3. Install dependencies
 npm install
 
-# 4. Створи файл .env.local на основі .env.example (якщо є)
-# та додай свій ключ API Gemini
+# 4. Create a .env.local file and add your Gemini API key
 echo "GOOGLE_GENAI_API_KEY=your_api_key_here" > .env.local
 
-# 5. Запусти застосунок у режимі розробки
+# 5. Start the development server
 npm run dev
